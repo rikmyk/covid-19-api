@@ -6,7 +6,7 @@ import { fetcher } from "../__util/fetcher";
 import {
   createSortQuery,
   sortBy,
-  createCountySortGroup
+  createCountySortGroup,
 } from "../__util/query";
 
 const endpoint = endpoints.casesCounty;
@@ -17,8 +17,15 @@ export default async (req: NowRequest, res: NowResponse) => {
       ? parseInt(req.query.resultOffset, 10)
       : 0;
 
-  const field =
-    req.query.field in sortBy ? (req.query.field as string) : "confirmed";
+  const field = Array.isArray(req.query.field)
+    ? req.query.field[0]
+    : req.query.field;
+
+  if (typeof field !== "string" || !(field in sortBy)) {
+    // Handle the error or set a default field
+    return res.status(400).json({ error: "Invalid field parameter" });
+  }
+
   const query = createSortQuery(createCountySortGroup(field), { resultOffset });
   const response = await fetcher(`${endpoint}?${qs.stringify(query)}`);
   const data = await response.json();

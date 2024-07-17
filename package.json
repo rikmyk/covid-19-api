@@ -8,6 +8,7 @@
     "start:cache": "tsc && node cache/dist/cache/index.js"
   },
   "dependencies": {
+    "@vercel/node": "^3.2.5",
     "@zeit/fetch-retry": "^5.0.1",
     "chrome-aws-lambda": "^2.1.1",
     "csv-parse": "^4.16.0",
